@@ -26,6 +26,10 @@ def emotion_detector(text_to_analyze):
             'sadness': sadness_score,
             'dominant_emotion': '<name of the dominant emotion>'
         }
+
+        If the input text is blank, the server responds with a
+        status_code of 400. In that case, this function returns the
+        same dictionary shape, but with every value set to None.
     """
 
     url = (
@@ -38,6 +42,18 @@ def emotion_detector(text_to_analyze):
     input_json = {"raw_document": {"text": text_to_analyze}}
 
     response = requests.post(url, json=input_json, headers=headers)
+
+    # Handle blank entries: the server returns status_code 400 when
+    # the input text is empty or otherwise invalid.
+    if response.status_code == 400:
+        return {
+            'anger': None,
+            'disgust': None,
+            'fear': None,
+            'joy': None,
+            'sadness': None,
+            'dominant_emotion': None,
+        }
 
     # Convert the response text into a dictionary
     response_dict = json.loads(response.text)

@@ -25,12 +25,18 @@ def emotion_detector_route():
 
     result = emotion_detector(text_to_analyze)
 
+    dominant_emotion = result['dominant_emotion']
+
+    # If the dominant emotion is None, the input text was invalid
+    # (e.g. blank), so return an error message with a 400 status code.
+    if dominant_emotion is None:
+        return "Invalid text! Please try again!", 400
+
     anger = result['anger']
     disgust = result['disgust']
     fear = result['fear']
     joy = result['joy']
     sadness = result['sadness']
-    dominant_emotion = result['dominant_emotion']
 
     response_text = (
         f"For the given statement, the system response is 'anger': {anger}, "
@@ -43,3 +49,4 @@ def emotion_detector_route():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+    
